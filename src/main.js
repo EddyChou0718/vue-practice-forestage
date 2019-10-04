@@ -32,6 +32,11 @@ import 'vue-loading-overlay/dist/vue-loading.css';
 
 Vue.component('Loading', Loading)
 
+//vue filters
+import currencyFilter from './js/filters/currency' //金錢轉為統一格式
+
+Vue.filter('currency', currencyFilter);
+
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'

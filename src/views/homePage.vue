@@ -18,9 +18,9 @@
                         <!-- Search bar -->
                         <form class="form-inline my-3 my-lg-0">
                             <div class="input-group">
-                                <input class="form-control" type="text" placeholder="Search" aria-label="Search">
+                                <input class="form-control" type="text" placeholder="Search" aria-label="Search" v-model="searchInput">
                                 <div class="input-group-append">
-                                    <button class="btn btn-outline-warning" type="submit">
+                                    <button class="btn btn-outline-warning">
                                         <i class="fa fa-search" aria-hidden="true"></i> Search</button>
                                 </div>
                             </div>
@@ -28,11 +28,11 @@
                     </div>
                     <!-- 主要商品列表 (Card) -->
                     <div class="tab-content">
-                        <div class="tab-pane" :class="{'active' : category == index}" v-for="(item, index) in categories" :key="index">
+                        <div class="tab-pane" :class="{'active' : category == index}" v-for="(item, index) in filteredProducts" :key="index">
                             <div class="row">
                                 <!-- 金牌 -->
-                                <template v-for="_item in products">
-                                    <div class="col-md-4 mb-4" :key="_item.id" v-if="_item.category == item">
+                                <template v-for="_item in item">
+                                    <div class="col-md-4 mb-4" :key="_item.id" v-if="search(_item)">
                                         <div class="card border-0 box-shadow text-center h-100">
                                             <img v-if="_item.image" class="card-img-top"
                                                 :src="_item.image"
@@ -112,12 +112,20 @@
         },
         data() {
             return {
+                searchInput: '',
             }
         },
         methods: {
             getProducts(page = 1) {
                 this.$store.dispatch('getProducts', page)
             },
+            search(item) {
+                if(item.title.indexOf(this.searchInput) >= 0) {
+                    return true;
+                } else {
+                    return false
+                }
+            }
         },
         computed: {
             isLoading() {
@@ -125,6 +133,19 @@
             },
             products() {
                 return this.$store.state.products;
+            },
+            filteredProducts() {
+                let filteredProducts = {};
+                for(let i in this.categories) {
+                    let tempArray = [];
+                    for(let j in this.products) {
+                        if(this.products[j]['category'] == this.categories[i]) {
+                            tempArray.push(this.products[j]);
+                        }
+                    }
+                    filteredProducts[i] = tempArray;
+                }
+                return filteredProducts
             },
             pagination() {
                 return this.$store.state.pagination;

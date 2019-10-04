@@ -21,10 +21,10 @@
                             <!-- <small class="text-muted">(加拉哈德版)</small> -->
                         </h1>
                         <div class="d-flex my-3 align-items-end justify-content-end">
-                            <del class="text-muted">售價 {{product.origin_price}}</del>
+                            <del class="text-muted">售價 {{product.origin_price | currency}}</del>
                             <div class="h3 mb-0 ml-auto text-danger">
                                 <small>網路價 </small>
-                                <strong>{{product.price}}</strong>
+                                <strong>{{product.price | currency}}</strong>
                             </div>
                         </div>
                         <!-- <hr> 尺寸:
@@ -85,41 +85,22 @@
     export default {
         data() {
             return {
-                product: {},
-                status: {
-                    loadingItem: ''
-                }
             }
         },
         methods: {
             getProduct() {
-                const id = this.$route.params.itemId
-                const api = `${PATH}/api/${APIPATH}/product/${id}`;
-                this.$store.dispatch('updateLoading', true)
-                this.$http.get(api).then((res) => {
-                    console.log(res.data)
-                    this.product = res.data.product;
-                    this.$store.dispatch('updateLoading', false)
-                })
+                this.$store.dispatch('getProduct', this.$route.params.itemId)
             },
             addtoCart(id, qty = 1) {
-                const api = `${PATH}/api/${APIPATH}/cart`;
-                this.status.loadingItem = id;
-                const cart = {
-                    product_id: id,
-                    qty
-                };
-                this.$http.post(api, {
-                    data: cart
-                }).then((res) => {
-                    this.status.loadingItem = '';
-                    console.log(res.data)
-                })
+                this.$store.dispatch('addtoCart', {id, qty})
             }
         },
         computed: {
             isLoading() {
                 return this.$store.state.isLoading;
+            },
+            product() {
+                return this.$store.state.product;
             }
         },
         created() {

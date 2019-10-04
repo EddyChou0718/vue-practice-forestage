@@ -4,7 +4,7 @@
         <nav class="navbar navbar-light bg-light">
             <router-link to="/" class="navbar-brand">
                 <i class="fa fa-heart text-info" aria-hidden="true"></i>
-                六角血拼賣賣
+                Eddy購物平台
             </router-link>
             <!-- 購物車內的數量 (Button 內包含 icon, 數量 badge) -->
             <div class="dropdown ml-auto">
@@ -26,14 +26,14 @@
                                 </td>
                                 <td class="align-middle">{{item.product.title}}</td>
                                 <td class="align-middle">{{item.product.num}} {{item.product.unit}}</td>
-                                <td class="align-middle text-right" v-if="item.product.price">{{item.product.price}}</td>
-                                <td class="align-middle text-right" v-else>{{item.product.origin_price}}</td>
+                                <td class="align-middle text-right" v-if="item.product.price">{{item.product.price | currency}}</td>
+                                <td class="align-middle text-right" v-else>{{item.product.origin_price | currency}}</td>
                             </tr>
                         </tbody>
                     </table>
-                    <a href="shoppingCart-checkout.html" class="btn btn-primary btn-block">
+                    <router-link to="/checkout" class="btn btn-primary btn-block">
                         <i class="fa fa-cart-plus" aria-hidden="true"></i> 結帳去
-                    </a>
+                    </router-link>
                 </div>
             </div>
         </nav>
@@ -52,7 +52,7 @@
                 </div>
                 <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">否</button>
-                <button type="button" class="btn btn-outline-danger px-5" @click.prevent="delCartItem(delItemId)">是</button>
+                <button type="button" class="btn btn-outline-danger px-5" @click.prevent="delCartItem()">是</button>
                 </div>
             </div>
             </div>
@@ -66,17 +66,15 @@ import $ from 'jquery'
 export default {
     data() {
         return {
-            delItemId: '',
         }
     },
     methods: {
         openDelModal(id) {
             $('#delModal').modal('show');
-            this.delItemId = id;
+            this.$store.dispatch('setDelItem', id)
         },
-        delCartItem(id) {
-            this.$store.dispatch('delCartItem', id);
-            this.delItemId = ''
+        delCartItem() {
+            this.$store.dispatch('delCartItem');
             $('#delModal').modal('hide');
         }
     },

@@ -10,10 +10,12 @@ export default new Vuex.Store({
   strict: true,
   state: {
     products: [],
+    product: {},
     pagination: {},
     categories: [],
     category: 0,
     cart: {},
+    delCartItem: '',
     showCart: false,
     isLoading: false
   },
@@ -30,6 +32,9 @@ export default new Vuex.Store({
     PRODUCTS(state, payload) {
       state.products = payload;
     },
+    PRODUCT(state, payload) {
+      state.product = payload
+    },
     PAGINATION(state, payload) {
       state.pagination = payload;
     },
@@ -42,6 +47,9 @@ export default new Vuex.Store({
     },
     CATEGORY(state, payload) {
       state.category = payload;
+    },
+    DELCARTITEM(state, payload) {
+      state.delCartItem = payload;
     }
   },
   actions: {
@@ -59,6 +67,15 @@ export default new Vuex.Store({
           context.commit('LOADING', false);
       })
     },
+    getProduct(context, payload) {
+        const api = `${PATH}/api/${APIPATH}/product/${payload}`;
+        context.commit('LOADING', true);
+        axios.get(api).then((res) => {
+            console.log(res.data)
+            context.commit('PRODUCT', res.data.product)
+            context.commit('LOADING', false);
+        })
+    },
     getCart(context) {
       const api = `${PATH}/api/${APIPATH}/cart`;
       context.commit('LOADING', true);
@@ -68,17 +85,37 @@ export default new Vuex.Store({
         context.commit('SHOWCART', true)
       })
     },
-    delCartItem({commit, dispatch}, payload) {
-      const api = `${PATH}/api/${APIPATH}/cart/${payload}`;
+    addtoCart(context, {id, qty}) {
+        const api = `${PATH}/api/${APIPATH}/cart`;
+        const cart = {
+            product_id: id,
+            qty
+        };
+        axios.post(api, {
+            data: cart
+        }).then((res) => {
+            console.log(res.data)
+            context.dispatch('getCart')
+        })
+    },
+    setDelItem(context, payload) {
+      context.commit('DELCARTITEM', payload)
+    },
+    delCartItem({commit, dispatch, state}) {
+      const api = `${PATH}/api/${APIPATH}/cart/${state.delCartItem}`;
       commit('LOADING', true);
       axios.delete(api).then((res) => {
-        commit('LOADING', false);
         dispatch('getCart')
-
+        dispatch('setDelItem', '')
+        commit('LOADING', false);
+        console.log(res.data)
       })
     },
     activeCategory(context, payload) {
       context.commit('CATEGORY', payload);
     },
+    refreshCart(context) {
+      context.commit('CART', '')
+    }
   }
 })
