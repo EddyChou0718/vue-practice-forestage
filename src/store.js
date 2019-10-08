@@ -17,7 +17,8 @@ export default new Vuex.Store({
     cart: {},
     delCartItem: '',
     showCart: false,
-    isLoading: false
+    isLoading: false,
+    coupons: [],
   },
   mutations: {
     LOADING(state, status) {
@@ -50,6 +51,9 @@ export default new Vuex.Store({
     },
     DELCARTITEM(state, payload) {
       state.delCartItem = payload;
+    },
+    COUPONS(state, payload) {
+      state.coupons = payload;
     }
   },
   actions: {
@@ -116,6 +120,14 @@ export default new Vuex.Store({
     },
     refreshCart(context) {
       context.commit('CART', '')
+    },
+    getCoupons(context) {
+      const api = `${PATH}/api/${APIPATH}/admin/coupons`;
+      context.commit('LOADING', true);
+      axios.get(api).then((res) => {
+          context.commit('COUPONS', res.data.coupons)
+          context.commit('LOADING', false);
+      })
     }
   }
 })

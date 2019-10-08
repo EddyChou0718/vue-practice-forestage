@@ -19,10 +19,10 @@
                         <form class="form-inline my-3 my-lg-0">
                             <div class="input-group">
                                 <input class="form-control" type="text" placeholder="Search" aria-label="Search" v-model="searchInput">
-                                <div class="input-group-append">
+                                <!-- <div class="input-group-append">
                                     <button class="btn btn-outline-warning">
                                         <i class="fa fa-search" aria-hidden="true"></i> Search</button>
-                                </div>
+                                </div> -->
                             </div>
                         </form>
                     </div>
@@ -30,16 +30,19 @@
                     <div class="tab-content">
                         <div class="tab-pane" :class="{'active' : category == index}" v-for="(item, index) in filteredProducts" :key="index">
                             <div class="row">
-                                <!-- 金牌 -->
                                 <template v-for="_item in item">
                                     <div class="col-md-4 mb-4" :key="_item.id" v-if="search(_item)">
                                         <div class="card border-0 box-shadow text-center h-100">
-                                            <img v-if="_item.image" class="card-img-top"
-                                                :src="_item.image"
-                                                alt="Card image cap">
-                                            <img v-else class="card-img-top"
-                                                :src="_item.imageUrl"
-                                                alt="Card image cap">
+                                            <div class="card-img-top" style="height: 10rem;">
+                                                <img v-if="_item.image"
+                                                    :src="_item.image"
+                                                    alt="Card image cap"
+                                                    style="max-height: 100%; max-width: 100%; vertical-align: middle">
+                                                <img v-else
+                                                    :src="_item.imageUrl"
+                                                    alt="Card image cap"
+                                                    style="max-height: 100%; max-width: 100%; vertical-align: middle">
+                                            </div>
                                             <div class="card-body">
                                                 <h4 class="card-title">{{_item.title}}</h4>
                                                 <p class="card-text">{{_item.content}}</p>

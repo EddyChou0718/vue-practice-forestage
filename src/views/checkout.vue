@@ -57,7 +57,12 @@
                                         <img :src="item.product.imageUrl"
                                             class="img-fluid img-thumbnail" alt="">
                                     </td>
-                                    <td class="align-middle">{{item.product.title}}</td>
+                                    <td class="align-middle">
+                                        {{ item.product.title }}
+                                        <div class="text-success" v-if="item.coupon">
+                                            已套用優惠券
+                                        </div>
+                                    </td>
                                     <td class="align-middle">{{item.product.num}} {{item.product.unit}}</td>
                                     <td class="align-middle text-right">{{item.final_total}}</td>
                                 </tr>
@@ -68,13 +73,29 @@
                 </td>
               </tr> -->
                                 <tr>
-                                    <td colspan="4" class="text-right">合計</td>
-                                    <td class="text-right">
+                                    <td colspan="4" class="text-right" 
+                                    :class="{'text-secondary' : cart.totol !== cart.final_total}">合計</td>
+                                    <td class="text-right" 
+                                    :class="{'text-secondary' : cart.totol !== cart.final_total}">
+                                        <strong>{{ cart.total }}</strong>
+                                    </td>
+                                </tr>
+                                <tr v-if="cart.totol !== cart.final_total">
+                                    <td colspan="4" class="text-right text-success">折扣價</td>
+                                    <td class="text-right text-success">
                                         <strong>{{cart.final_total}}</strong>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
+                        <div class="input-group mb-3 input-group-sm">
+                            <input type="text" class="form-control" placeholder="請輸入優惠碼 : testcode" v-model="couponCode">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" @click="addCouponCode()">
+                                    套用優惠碼
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     <h5 class="py-3 mt-5 mb-2 text-center bg-light">
@@ -159,7 +180,8 @@
                         address: ''
                     },
                     message: ''
-                }
+                },
+                couponCode: ''
             }
         },
         methods: {
@@ -189,6 +211,23 @@
                         this.$store.dispatch('updateLoading', false)
                     }
                 });
+            },
+            addCouponCode() {
+                const api = `${PATH}/api/${APIPATH}/coupon`;
+                const coupon = {
+                    code: this.couponCode
+                }
+                this.$http.post(api, {
+                    data: coupon
+                }).then((res) => {
+                    console.log(res.data);
+                    if(res.data.success) {
+                        this.$store.dispatch('getCart')
+                    } else {
+                        // this.$bus.$emit('message:push', res.data.message, 'danger');
+                    }
+                    this.couponCode = ''
+                })
             }
         },
         computed: {
@@ -197,7 +236,13 @@
             },
             cart() {
                 return this.$store.state.cart;
+            },
+            coupons() {
+                return this.$store.state.coupons;
             }
-        }
+        },
+        created() {
+            this.$store.dispatch('getCoupons')
+        },
     }
 </script>
