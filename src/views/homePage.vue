@@ -123,7 +123,7 @@
                 this.$store.dispatch('getProducts', page)
             },
             search(item) {
-                if(item.title.indexOf(this.searchInput) >= 0) {
+                if(item.title.toLowerCase().indexOf(this.searchInput.toLowerCase()) >= 0) {
                     return true;
                 } else {
                     return false

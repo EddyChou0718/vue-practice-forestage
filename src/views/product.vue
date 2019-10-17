@@ -44,10 +44,10 @@
                         </div> -->
 
                         <div class="input-group mt-3">
-                            <select name="" class="form-control mr-1" id="" v-model="product.num">
+                            <select name="" class="form-control mr-1" id="" v-model="productQty">
                                 <option :value="num" v-for="num in 10" :key="num">{{num}} {{product.unit}}</option>
                             </select>
-                            <button class="btn btn-primary" @click="addtoCart(product.id, product.num)">
+                            <button class="btn btn-primary" @click="addtoCart(product.id, productQty)">
                                 <i class="fa fa-cart-plus" aria-hidden="true"></i> 加入購物車
                             </button>
                         </div>
@@ -85,6 +85,7 @@
     export default {
         data() {
             return {
+                productQty: 1,
             }
         },
         methods: {

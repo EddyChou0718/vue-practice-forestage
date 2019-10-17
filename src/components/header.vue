@@ -17,7 +17,7 @@
                     <h6>已選擇商品</h6>
                     <table class="table table-sm">
                         <tbody>
-                            <tr v-for="item in cart.carts" :key="item.id">
+                            <tr v-for="item in cart.carts" :key="item.id" class="text-nowrap">
                                 <td class="align-middle text-center">
                                     <a herf="#" class="text-muted" data-toggle="modal"
                                         @click.prevent="openDelModal(item.id)">
@@ -25,7 +25,7 @@
                                     </a>
                                 </td>
                                 <td class="align-middle">{{item.product.title}}</td>
-                                <td class="align-middle">{{item.product.num}} {{item.product.unit}}</td>
+                                <td class="align-middle">{{item.qty}} {{item.product.unit}}</td>
                                 <td class="align-middle text-right" v-if="item.product.price">{{item.product.price | currency}}</td>
                                 <td class="align-middle text-right" v-else>{{item.product.origin_price | currency}}</td>
                             </tr>
